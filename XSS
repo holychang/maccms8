@@ -1,0 +1,44 @@
+#CVE      
+
+#MacCmsV8.0
+The vulnerability was discovered by downloading the program's source code to local and online deployment tests.      
+
+Location:        
+/a/tpl/module/system.php
+Code：      
+	$config['site']['keywords'] = trim(be('post','site_keywords'));
+Rows:42
+
+
+Harm：       
+Stored attacks are those where the injected script is permanently stored on the target servers, in a message forum,
+visitor log, comment field, etc. The victim then retrieves the malicious script from the server when it requests the 
+stored information.      
+
+Conditions for Execution：      
+Normal access can.   
+
+Edition：     
+Versions of maccms<=V8    
+
+Cause the cause 1：
+/a/tpl/html/system_config.html lines 84:
+<td><input name="site_keywords" value="{site_keywords}" size="60">
+
+/template/paody/html/vod_index.html lines 6:
+<meta name="keywords" content="{maccms:keywords}" />
+
+When the page calls the site_keywords function, the function of site_keywords is directly output in the vlue, 
+which causes the attack statement to perform complete output.
+
+Cause the cause 2：
+/a/tpl/module/system.php lines 42  
+$config['site']['keywords'] = trim(be('post','site_keywords'));
+
+When the function is output to the foreground, there is no filtering or escaping of the input content, 
+resulting in the generation of the vulnerability.
+
+POC :      
+http://127.0.0.1/a/index.php?m=system-config
+Payload:
+test" /><script>alert(1)</script>
