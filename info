@@ -1,0 +1,41 @@
+#CVE      
+
+#MacCmsV8.0
+The vulnerability was discovered by downloading the program's source code to local and online deployment tests.      
+
+Location:        
+/inc/common/function.php
+
+Code：      
+$phpmsg = debuginfo();
+	
+Rows:109
+
+Return error ：
+
+Program messages
+    [Line: 0040]\a\index.php(include)
+    [Line: 0268]\a\tpl\module\admin.php(showErr)
+    [Line: 0109]\inc\common\function.php(debuginfo)
+
+Harm：       
+Web Site path leakage .      
+
+Conditions for Execution：      
+Normal access can.   
+
+Edition：     
+Versions of maccms<=V8    
+
+Cause the cause 1：
+/inc/common/function.php lines 109:
+	$phpmsg = debuginfo();
+	
+/inc/common/function.php lines 147:	
+		<ul> $phpmsg a</ul>
+
+ in line 109 use "debuginfo()" and in line 147 echo "$phpmsg"
+so website cause path leakage. 
+
+POC :      
+http://127.0.0.1/a/index.php?m=admin-getinfo
