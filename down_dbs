@@ -1,0 +1,46 @@
+#CVE      
+
+#MacCmsV8.0
+The vulnerability was discovered by downloading the program's source code to local and online deployment tests.      
+
+Location:        
+/a/tpl/module/db.php
+Code：      
+	$fpath = 'bak/'.$file . '-'.$j.'.sql';
+Rows:227
+
+
+Harm：       
+Backup databases can be downloaded by splicing paths   
+
+Conditions for Execution：      
+Normal access can.   
+
+Edition：     
+Versions of maccms<=V8    
+
+Cause the cause 1：
+/a/tpl/html/db_list.html lines 41:
+<td><input name="file[]" type="checkbox" value="{name}" /></td>
+
+When the page calls the {name} function, the function of {name} is output directly to 
+the vlue, so you know the name of the backup database.
+
+Cause the cause 2：
+/a/tpl/module/db.php lines 135  
+$name = str_replace('bak/','',$tmp[0]);
+
+/a/tpl/module/db.php lines 227
+$fpath = 'bak/'.$file . '-'.$j.'.sql';
+
+
+
+When we know the name of the backup database in the background, we can build the download 
+address of the backup database on the browser.
+
+POC :      
+http://127.0.0.1/a/index.php?m=db-lis
+such as database name：20181121_RMTQ78FU78
+
+Payload:
+http://127.0.0.1/a/bak/20181121_RMTQ78FU78-1.sql
