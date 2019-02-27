@@ -1,0 +1,47 @@
+#CVE-2019-8410
+
+#MacCmsV8.0
+Discover the vulnerability by downloading the program's source code to a local and online deployment test.
+
+location:
+/inc/config/cache.php
+code:
+'t_key' => '" /><svg/onload=confirm(1)><',
+Line: 1
+
+
+harm:
+Stored attacks are those where the injected script is permanently stored on the target servers, in a message forum,
+Visitor log, comment field, etc. The victim then retrieves the malicious script from the server when it requests the
+Stored information.
+
+Execution conditions:
+Normal access is fine.
+
+Version:
+Maccms <= V8 version
+
+Reason 1:
+/template/paody/html/vod_type.htmlLine 6:
+<meta name="keywords" content="{page:key}" />
+
+When the page calls the {page:key} function, the function of {page:key} is output directly to
+Content, which causes the attack statement to perform complete output.
+
+Reason 2:
+
+Line 79 of /a/tpl/module/db.php
+$valarr['t_name'] = strip_tags($valarr['t_name']);
+Only 't_name' uses the strip_tags() function; other fields do not use filter functions, causing xss to fail filtering
+
+
+
+When the function is output to the foreground, there is no filtering or escaping of the input content, 
+resulting in the generation of the vulnerability.
+
+POC:
+Http://127.0.0.1/a/index.php?m=vod-typeinfo-id-1
+In "SEO关键字" input:" /><svg/onload=confirm(1)><
+
+Payload:
+" /><svg/onload=confirm(1)><
